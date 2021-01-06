@@ -1,0 +1,8 @@
+en:
+  activerecord:
+    errors:
+      models:
+        acts_as_table/record_model:
+          attributes:
+            base:
+              unreachable: "is unreachable"

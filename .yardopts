@@ -1,0 +1,1 @@
+--markup markdown --markup-provider redcarpet --plugin activerecord --plugin activesupport-concern --plugin rails
