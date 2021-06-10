@@ -59,7 +59,7 @@ module ActsAsTable
       class_name: 'ActsAsTable::RecordError',
       dependent: :nullify,
       foreign_key: 'value_id',
-      inverse_of: :values,
+      inverse_of: :value,
       validate: false,
     }
 
