@@ -180,16 +180,18 @@ module ActsAsTable
               }
 
               new_record_or_persisted.errors[attribute_name].each do |message|
-                value.record_errors.build(attribute_name: attribute_name, message: message)
+                value.record_errors.build(attribute_name: attribute_name, message: message) do |record_error|
+                  record.record_errors.proxy_association.add_to_target(record_error)
+                end
               end
             end
           end
 
-          new_record_or_persisted.errors.each do |attribute_name, message|
-            unless attribute_names.include?(attribute_name.to_s)
-              record.record_errors.build(attribute_name: attribute_name, message: message)
-            end
-          end
+          # new_record_or_persisted.errors.each do |attribute_name, message|
+          #   unless attribute_names.include?(attribute_name.to_s)
+          #     record.record_errors.build(attribute_name: attribute_name, message: message)
+          #   end
+          # end
         end
       }
     end

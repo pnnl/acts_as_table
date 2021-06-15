@@ -80,17 +80,17 @@ module ActsAsTable
 
     # validates :record_model_changed, **{}
 
-    validate :record_must_be_valid_class, :record_model_must_belong_to_row_model_for_table, **{
+    validate :base_must_be_valid_class, :record_model_must_belong_to_row_model_for_table, **{
       if: ::Proc.new { |record| record.record_model.present? },
     }
 
     private
 
     # @return [void]
-    def record_must_be_valid_class
-      self.record_type.try { |record_type|
-        unless record_type.eql?(self.record_model.class_name)
-          self.errors.add('record_type', :invalid)
+    def base_must_be_valid_class
+      self.base_type.try { |base_type|
+        unless base_type.nil? || base_type.eql?(self.record_model.class_name)
+          self.errors.add('base_type', :invalid)
         end
       }
     end

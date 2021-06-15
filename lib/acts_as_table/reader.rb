@@ -1,4 +1,16 @@
 module ActsAsTable
+  # ActsAsTable reader error.
+  class ReaderError < ArgumentError
+  end
+
+  # Raised when the headers are not found.
+  class HeadersNotFound < ReaderError
+  end
+
+  # Raised when the headers do not match the ActsAsTable row model.
+  class InvalidHeaders < ReaderError
+  end
+
   # ActsAsTable reader object.
   #
   # @!attribute [r] row_model
@@ -71,7 +83,8 @@ module ActsAsTable
     # Returns a pair, where the first element is the headers and the second element is a flag that indicates if input stream is at end of file.
     #
     # @return [Array<Object>]
-    # @raise [ArgumentError] If the headers do not match the ActsAsTable row model for this ActsAsTable reader object.
+    # @raise [ActsAsTable::HeadersNotFound] If the headers are not found by this ActsAsTable reader object.
+    # @raise [ActsAsTable::InvalidHeaders] If the headers do not match the ActsAsTable row model for this ActsAsTable reader object.
     def read_headers
       # @return [ActsAsTable::Headers::Array]
       headers = @row_model.to_headers
@@ -91,11 +104,11 @@ module ActsAsTable
       }
 
       if rows.any?(&:nil?)
-        raise ::ArgumentError.new("#{self.class}#read_headers - must exist")
+        raise ActsAsTable::HeadersNotFound.new("#{self.class}#read_headers - must exist")
       end
 
       unless [headers, rows].transpose.all? { |pair| pair[0] == pair[1] }
-        raise ::ArgumentError.new("#{self.class}#read_headers - invalid")
+        raise ActsAsTable::InvalidHeaders.new("#{self.class}#read_headers - invalid")
       end
 
       [rows, eof]
@@ -113,7 +126,8 @@ module ActsAsTable
     # @yieldparam [Array<String, nil>, nil] row
     # @yieldreturn [void]
     # @return [Enumerable<Array<String, nil>, nil>]
-    # @raise [ArgumentError] If the headers do not match the ActsAsTable row model for this ActsAsTable reader object.
+    # @raise [ActsAsTable::HeadersNotFound] If the headers are not found by this ActsAsTable reader object.
+    # @raise [ActsAsTable::InvalidHeaders] If the headers do not match the ActsAsTable row model for this ActsAsTable reader object.
     def each_row(&block)
       ::Enumerator.new { |enumerator|
         headers, eof = *self.read_headers
@@ -131,6 +145,8 @@ module ActsAsTable
     # Returns a new ActsAsTable table object by reading all rows in the input stream.
     #
     # @return [ActsAsTable::Table]
+    # @raise [ActsAsTable::HeadersNotFound] If the headers are not found by this ActsAsTable reader object.
+    # @raise [ActsAsTable::InvalidHeaders] If the headers do not match the ActsAsTable row model for this ActsAsTable reader object.
     # @raise [ArgumentError] If the name of a class for a given record does not match the class name for the corresponding ActsAsTable record model.
     def read_table
       ActsAsTable::Table.new do |table|
