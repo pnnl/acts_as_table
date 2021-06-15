@@ -78,7 +78,7 @@ module ActsAsTable
       #
       # @param [String, Regexp] from
       # @param [Hash<Symbol, Object>] options
-      # @option options [String] to
+      # @option options [String] :to
       # @return [ActsAsTable::Mapper::ForeignKey]
       #
       # @example Map from a string to another string.
