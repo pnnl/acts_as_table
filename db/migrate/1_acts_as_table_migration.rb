@@ -13,7 +13,6 @@ ActsAsTableMigration.class_eval do
 
       t.timestamps null: false
     end
-    add_foreign_key ActsAsTable.row_models_table, ActsAsTable.record_models_table, column: 'root_record_model_id'
 
     create_table ActsAsTable.column_models_table do |t|
       t.references :row_model, index: true, foreign_key: { to_table: ActsAsTable.row_models_table }, null: true
@@ -92,8 +91,6 @@ ActsAsTableMigration.class_eval do
 
       t.timestamps null: false
     end
-    add_foreign_key ActsAsTable.belongs_tos_table, ActsAsTable.record_models_table, column: 'source_record_model_id'
-    add_foreign_key ActsAsTable.belongs_tos_table, ActsAsTable.record_models_table, column: 'target_record_model_id'
 
     create_table ActsAsTable.has_manies_table do |t|
       t.references :row_model, index: true, foreign_key: { to_table: ActsAsTable.row_models_table }, null: false
@@ -105,7 +102,6 @@ ActsAsTableMigration.class_eval do
 
       t.timestamps null: false
     end
-    add_foreign_key ActsAsTable.has_manies_table, ActsAsTable.record_models_table, column: 'source_record_model_id'
 
     create_table ActsAsTable.has_many_targets_table do |t|
       t.references :has_many, index: true, foreign_key: { to_table: ActsAsTable.has_manies_table }, null: false
@@ -165,6 +161,11 @@ ActsAsTableMigration.class_eval do
 
       t.integer :record_errors_count, null: false, default: 0
     end
+
+    add_foreign_key ActsAsTable.belongs_tos_table, ActsAsTable.record_models_table, column: 'source_record_model_id'
+    add_foreign_key ActsAsTable.belongs_tos_table, ActsAsTable.record_models_table, column: 'target_record_model_id'
+    add_foreign_key ActsAsTable.has_manies_table, ActsAsTable.record_models_table, column: 'source_record_model_id'
+    add_foreign_key ActsAsTable.row_models_table, ActsAsTable.record_models_table, column: 'root_record_model_id'
   end
 
   def self.down
