@@ -107,8 +107,8 @@ module ActsAsTable
     def from_row(row = [], records = ActsAsTable::Record.all)
       # @return [Hash<ActsAsTable::RecordModel, Hash<ActsAsTable::ValueProvider::InstanceMethods, Object>>]
       value_by_record_model_and_value_provider = self.record_models.inject({}) { |acc_for_record_model, record_model|
-        acc_for_record_model[record_model] = record_model.each_acts_as_table_value_provider(except: [:row_model]).inject({}) { |acc_for_value_provider, value_provider|
-          acc_for_value_provider[value_provider] = value_provider.column_model.try { |column_model|
+        acc_for_record_model[record_model] ||= record_model.each_acts_as_table_value_provider(nil, except: [:row_model, :row_models_as_root]).inject({}) { |acc_for_value_provider, value_provider|
+          acc_for_value_provider[value_provider] ||= value_provider.column_model.try { |column_model|
             # @return [Integer]
             index = column_model.position - 1
 
@@ -215,7 +215,7 @@ module ActsAsTable
         # @return [ActsAsTable::ValueProvider::WrappedValue, nil]
         value_by_value_provider = value_by_record_model_and_value_provider.target_value.try(:[], record_model)
 
-        record_model.each_acts_as_table_value_provider(except: [:row_model]) do |value_provider|
+        record_model.each_acts_as_table_value_provider(nil, except: [:row_model, :row_models_as_root]) do |value_provider|
           value_provider.column_model.try { |column_model|
             # @return [Integer]
             index = column_model.position - 1

@@ -19,7 +19,7 @@ module ActsAsTable
         self.reflect_on_all_associations(macro).select { |reflection|
           reflection.klass.acts_as_table_value_provider?
         }.select { |reflection|
-          (options[:except].nil? || !options[:except].collect(&:to_sym).include?(reflection.name)) && (options[:only].nil? || options[:only].collect(&:to_sym).include?(reflection.name))
+          (options[:except].nil? || !options[:except].collect(&:to_sym).include?(reflection.name.to_sym)) && (options[:only].nil? || options[:only].collect(&:to_sym).include?(reflection.name.to_sym))
         }
       end
     end

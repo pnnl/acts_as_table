@@ -136,7 +136,7 @@ module ActsAsTable
       end
 
       # @return [Hash<ActsAsTable::ValueProvider::InstanceMethods, Object>]
-      value_by_value_provider = self.each_acts_as_table_value_provider(except: [:row_model]).inject({}) { |acc, value_provider|
+      value_by_value_provider = self.each_acts_as_table_value_provider(nil, except: [:row_model, :row_models_as_root]).inject({}) { |acc, value_provider|
         acc[value_provider] ||= base.nil? ? ActsAsTable.adapter.wrap_value_for(value_provider, base, nil, nil) : ActsAsTable.adapter.get_value_for(value_provider, base, **options)
         acc
       }
@@ -157,7 +157,7 @@ module ActsAsTable
       end
 
       # @return [Array<Object>]
-      value_by_value_provider, changed = *self.each_acts_as_table_value_provider(except: [:row_model]).inject([{}, false]) { |acc, value_provider|
+      value_by_value_provider, changed = *self.each_acts_as_table_value_provider(nil, except: [:row_model, :row_models_as_root]).inject([{}, false]) { |acc, value_provider|
         # @return [Object, nil]
         new_value = new_value_by_value_provider.try(:[], value_provider)
 
